@@ -2,7 +2,19 @@
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+This project is an exercice from Codecademy course, using React and Spotify API.
+
+## Current state of learning
 *Just playing with React*
+
+1. React Developer Tools
+2. Create components / render()
+3. Components Interacting
+    1. Components Render Components
+    2. Props (attributes/display/children/defaultProps/...)
+    3. State (stateless/ful, parenting/sibling...)
+    4. Lifecycle methods (didMount/didUpdate/willUnmount)
+
 
 ## Available Scripts
 
