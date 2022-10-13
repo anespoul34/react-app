@@ -4,6 +4,12 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 This project is an exercice from Codecademy course, using React and Spotify API.
 
+## Usage
+
+You need a Spotify Developer App to get your clientID => [here](https://developer.spotify.com/dashboard/applications) !
+And add it into src/util/Spotify.js
+`const clientId = '<clientID>';`
+
 ## Current state of learning
 *Just playing with React*
 

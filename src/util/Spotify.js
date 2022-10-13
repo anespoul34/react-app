@@ -1,4 +1,5 @@
-const clientId = '<Client_ID>';
+// Use your clientID. Should be available on your application here => https://developer.spotify.com/dashboard/applications
+const clientId = '<clientID>';
 const redirect_uri = 'http://localhost:3000/';
 
 let accessToken;
@@ -26,6 +27,49 @@ export const Spotify = {
     }
   },
 
+  getPlaylistItems(playlistID) {
+    const accessToken = Spotify.getAccessToken();
+    const headers = {
+      Authorization: `Bearer ${accessToken}`
+    }
+
+    return fetch(`https://api.spotify.com/v1/playlists/${playlistID}`, {
+      headers: { Authorization: `Bearer ${accessToken}` },
+      method: 'GET'
+    })
+    .then(response => response.json())
+    .then(jsonResponse => {
+      let result = jsonResponse.tracks.items.map(item => {
+        return ({
+        id: item.track.id,
+        name: item.track.name,
+        artist: item.track.artists[0].name,
+        album: item.track.album.name,
+        uri: item.track.uri
+        })
+      });
+      return result;
+    })
+  },
+  getUserPlaylists() {
+    const accessToken = Spotify.getAccessToken();
+
+    let userId;
+    return fetch(`https://api.spotify.com/v1/me`, {headers: { Authorization: `Bearer ${accessToken}` }}
+    ).then(response => response.json()
+    ).then(jsonResponse => {
+      userId = jsonResponse.id;
+      return fetch(`https://api.spotify.com/v1/users/${userId}/playlists`, {
+        headers: { Authorization: `Bearer ${accessToken}` },
+        method: 'GET'
+      })
+      .then(response => response.json())
+      .then(jsonResponse => {
+        return jsonResponse;
+      })
+    })
+  },
+
   search(term) {
     const accessToken = Spotify.getAccessToken();
     return fetch(`https://api.spotify.com/v1/search?type=track&q=${term}`, {
@@ -38,6 +82,7 @@ export const Spotify = {
       if (!jsonResponse.tracks) {
         return [];
       }
+      console.log(jsonResponse);
       return jsonResponse.tracks.items.map(track => ({
         id: track.id,
         name: track.name,
@@ -73,8 +118,6 @@ export const Spotify = {
           method: 'POST',
           body: JSON.stringify({uris: trackURIs})
         });
-      }).catch(e => {
-        console.log(e);
       });
     })
   }

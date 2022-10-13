@@ -4,20 +4,40 @@ import { Spotify } from '../../util/Spotify';
 import { SearchResults } from '../SearchResults/SearchResults';
 import { Playlist } from '../Playlist/Playlist';
 import { SearchBar } from '../SearchBar/SearchBar';
+import { UserPlaylists } from '../UserPlaylists/UserPlaylists';
 
 class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = { 
       searchResults: [],
-      playlistName: "Super Playlist",
-      playlistTracks: []
+      playlistName: "New Playlist",
+      playlistTracks: [],
+      userPlaylists: [],
     };
     this.addTrack = this.addTrack.bind(this);
     this.removeTrack = this.removeTrack.bind(this);
     this.updatePlaylistName = this.updatePlaylistName.bind(this);
     this.savePlaylist = this.savePlaylist.bind(this);
     this.search = this.search.bind(this);
+    this.getPlaylists = this.getPlaylists.bind(this);
+    this.selectPlaylist = this.selectPlaylist.bind(this);
+  }
+
+  async selectPlaylist(id) {
+    let tracks = await Spotify.getPlaylistItems(id);
+    let playlist = this.state.userPlaylists.items.find(e => e.id === id);
+    console.log(playlist.name);
+    console.log(tracks);
+    this.setState({
+      playlistName: playlist.name,
+      playlistTracks: tracks
+    });
+  }
+
+  async getPlaylists() {
+    let playlists = await Spotify.getUserPlaylists();
+    this.setState({ userPlaylists: playlists });
   }
 
   addTrack(track) {
@@ -50,6 +70,7 @@ class App extends React.Component {
 
   async search(term) {
     let result = await Spotify.search(term);
+    console.log(result);
     this.setState({ searchResults: result });
   }
 
@@ -69,10 +90,16 @@ class App extends React.Component {
               playlistTracks={this.state.playlistTracks} 
               onRemove={this.removeTrack} 
               onNameChange={this.updatePlaylistName}/>
+            <UserPlaylists 
+              onSelection={this.selectPlaylist}
+              playlists={this.state.userPlaylists} />
           </div>
         </div>
       </div>
     );
+  }
+  componentDidMount() {
+    this.getPlaylists();
   }
 }
 
